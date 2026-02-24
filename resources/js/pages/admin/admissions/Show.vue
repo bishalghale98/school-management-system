@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, useForm, router } from '@inertiajs/vue3';
+import { Head, useForm, router, Link } from '@inertiajs/vue3';
 import {
     ArrowLeft,
     Save,
@@ -131,7 +131,7 @@ function formatDate(d: string) {
                 >
                     <h3 class="font-semibold">Documents</h3>
                     <div class="flex flex-wrap gap-2">
-                        <a
+                        <Link
                             v-for="doc in application.documents"
                             :key="doc"
                             :href="`/storage/${doc}`"
@@ -140,7 +140,7 @@ function formatDate(d: string) {
                         >
                             <FileText class="h-4 w-4" />
                             {{ doc.split('/').pop() }}
-                        </a>
+                        </Link>
                     </div>
                 </div>
                 <div

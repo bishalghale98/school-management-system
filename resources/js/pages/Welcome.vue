@@ -79,7 +79,7 @@ withDefaults(
                             </span>
                             <span>
                                 Read the
-                                <a
+                                <Link
                                     href="https://laravel.com/docs"
                                     target="_blank"
                                     class="ml-1 inline-flex items-center space-x-1 font-medium text-[#f53003] underline underline-offset-4 dark:text-[#FF4433]"
@@ -99,7 +99,7 @@ withDefaults(
                                             stroke-linecap="square"
                                         />
                                     </svg>
-                                </a>
+                                </Link>
                             </span>
                         </li>
                         <li
@@ -118,7 +118,7 @@ withDefaults(
                             </span>
                             <span>
                                 Watch video tutorials at
-                                <a
+                                <Link
                                     href="https://laracasts.com"
                                     target="_blank"
                                     class="ml-1 inline-flex items-center space-x-1 font-medium text-[#f53003] underline underline-offset-4 dark:text-[#FF4433]"
@@ -138,19 +138,19 @@ withDefaults(
                                             stroke-linecap="square"
                                         />
                                     </svg>
-                                </a>
+                                </Link>
                             </span>
                         </li>
                     </ul>
                     <ul class="flex gap-3 text-sm leading-normal">
                         <li>
-                            <a
+                            <Link
                                 href="https://cloud.laravel.com"
                                 target="_blank"
                                 class="inline-block rounded-sm border border-black bg-[#1b1b18] px-5 py-1.5 text-sm leading-normal text-white hover:border-black hover:bg-black dark:border-[#eeeeec] dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:border-white dark:hover:bg-white"
                             >
                                 Deploy now
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 </div>

@@ -35,8 +35,8 @@ import UserMenuContent from '@/components/UserMenuContent.vue';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { getInitials } from '@/composables/useInitials';
 import { toUrl } from '@/lib/utils';
-import type { BreadcrumbItem, NavItem } from '@/types';
 import { dashboard } from '@/routes';
+import type { BreadcrumbItem, NavItem } from '@/types';
 
 type Props = {
     breadcrumbs?: BreadcrumbItem[];
@@ -125,7 +125,7 @@ const rightNavItems: NavItem[] = [
                                     </Link>
                                 </nav>
                                 <div class="flex flex-col space-y-4">
-                                    <a
+                                    <Link
                                         v-for="item in rightNavItems"
                                         :key="item.title"
                                         :href="toUrl(item.href)"
@@ -139,7 +139,7 @@ const rightNavItems: NavItem[] = [
                                             class="h-5 w-5"
                                         />
                                         <span>{{ item.title }}</span>
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                         </SheetContent>
@@ -214,7 +214,7 @@ const rightNavItems: NavItem[] = [
                                                 as-child
                                                 class="group h-9 w-9 cursor-pointer"
                                             >
-                                                <a
+                                                <Link
                                                     :href="toUrl(item.href)"
                                                     target="_blank"
                                                     rel="noopener noreferrer"
@@ -226,7 +226,7 @@ const rightNavItems: NavItem[] = [
                                                         :is="item.icon"
                                                         class="size-5 opacity-80 group-hover:opacity-100"
                                                     />
-                                                </a>
+                                                </Link>
                                             </Button>
                                         </TooltipTrigger>
                                         <TooltipContent>

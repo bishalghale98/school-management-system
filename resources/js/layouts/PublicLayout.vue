@@ -10,7 +10,6 @@ import {
     Instagram,
     Menu,
     X,
-    ChevronDown,
 } from 'lucide-vue-next';
 import { ref, computed } from 'vue';
 import type { SiteSettings } from '@/types';
@@ -41,22 +40,22 @@ function isActive(href: string) {
             class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-2"
         >
             <div class="flex flex-wrap items-center gap-4">
-                <a
+                <Link
                     v-if="settings?.phone_1"
                     :href="`tel:${settings.phone_1}`"
                     class="flex items-center gap-1 transition hover:text-white"
                 >
                     <Phone class="h-3 w-3" />
                     {{ settings.phone_1 }}
-                </a>
-                <a
+                </Link>
+                <Link
                     v-if="settings?.email_1"
                     :href="`mailto:${settings.email_1}`"
                     class="flex items-center gap-1 transition hover:text-white"
                 >
                     <Mail class="h-3 w-3" />
                     {{ settings.email_1 }}
-                </a>
+                </Link>
                 <span
                     v-if="settings?.address"
                     class="hidden items-center gap-1 md:flex"
@@ -66,34 +65,34 @@ function isActive(href: string) {
                 </span>
             </div>
             <div class="flex items-center gap-3">
-                <a
+                <Link
                     v-if="settings?.facebook_url"
                     :href="settings.facebook_url"
                     target="_blank"
                     class="transition hover:text-white"
                     ><Facebook class="h-3.5 w-3.5"
-                /></a>
-                <a
+                /></Link>
+                <Link
                     v-if="settings?.youtube_url"
                     :href="settings.youtube_url"
                     target="_blank"
                     class="transition hover:text-white"
                     ><Youtube class="h-3.5 w-3.5"
-                /></a>
-                <a
+                /></Link>
+                <Link
                     v-if="settings?.twitter_url"
                     :href="settings.twitter_url"
                     target="_blank"
                     class="transition hover:text-white"
                     ><Twitter class="h-3.5 w-3.5"
-                /></a>
-                <a
+                /></Link>
+                <Link
                     v-if="settings?.instagram_url"
                     :href="settings.instagram_url"
                     target="_blank"
                     class="transition hover:text-white"
                     ><Instagram class="h-3.5 w-3.5"
-                /></a>
+                /></Link>
             </div>
         </div>
     </div>
@@ -219,34 +218,34 @@ function isActive(href: string) {
                     {{ settings.tagline }}
                 </p>
                 <div class="flex items-center gap-3">
-                    <a
+                    <Link
                         v-if="settings?.facebook_url"
                         :href="settings.facebook_url"
                         target="_blank"
                         class="rounded-full bg-gray-800 p-2 transition hover:bg-blue-600"
                         ><Facebook class="h-4 w-4"
-                    /></a>
-                    <a
+                    /></Link>
+                    <Link
                         v-if="settings?.youtube_url"
                         :href="settings.youtube_url"
                         target="_blank"
                         class="rounded-full bg-gray-800 p-2 transition hover:bg-red-600"
                         ><Youtube class="h-4 w-4"
-                    /></a>
-                    <a
+                    /></Link>
+                    <Link
                         v-if="settings?.twitter_url"
                         :href="settings.twitter_url"
                         target="_blank"
                         class="rounded-full bg-gray-800 p-2 transition hover:bg-sky-500"
                         ><Twitter class="h-4 w-4"
-                    /></a>
-                    <a
+                    /></Link>
+                    <Link
                         v-if="settings?.instagram_url"
                         :href="settings.instagram_url"
                         target="_blank"
                         class="rounded-full bg-gray-800 p-2 transition hover:bg-pink-600"
                         ><Instagram class="h-4 w-4"
-                    /></a>
+                    /></Link>
                 </div>
             </div>
 
@@ -298,10 +297,10 @@ function isActive(href: string) {
                         class="flex items-center gap-2"
                     >
                         <Phone class="h-4 w-4 shrink-0" />
-                        <a
+                        <Link
                             :href="`tel:${settings.phone_1}`"
                             class="hover:text-white"
-                            >{{ settings.phone_1 }}</a
+                            >{{ settings.phone_1 }}</Link
                         >
                     </li>
                     <li
@@ -309,10 +308,10 @@ function isActive(href: string) {
                         class="flex items-center gap-2"
                     >
                         <Phone class="h-4 w-4 shrink-0" />
-                        <a
+                        <Link
                             :href="`tel:${settings.phone_2}`"
                             class="hover:text-white"
-                            >{{ settings.phone_2 }}</a
+                            >{{ settings.phone_2 }}</Link
                         >
                     </li>
                     <li
@@ -320,10 +319,10 @@ function isActive(href: string) {
                         class="flex items-center gap-2"
                     >
                         <Mail class="h-4 w-4 shrink-0" />
-                        <a
+                        <Link
                             :href="`mailto:${settings.email_1}`"
                             class="hover:text-white"
-                            >{{ settings.email_1 }}</a
+                            >{{ settings.email_1 }}</Link
                         >
                     </li>
                 </ul>

@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\UpdateDownloadRequest;
 use App\Models\Download;
 use App\Models\DownloadCategory;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -69,6 +70,9 @@ class DownloadController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('file')) {
+            if ($download->file_path) {
+                Storage::disk('public')->delete($download->file_path);
+            }
             $data['file_path'] = $request->file('file')->store('downloads', 'public');
         }
         unset($data['file']);
@@ -80,6 +84,10 @@ class DownloadController extends Controller
 
     public function destroy(Download $download): RedirectResponse
     {
+        if ($download->file_path) {
+            Storage::disk('public')->delete($download->file_path);
+        }
+
         $download->delete();
 
         return redirect()->route('admin.downloads.index')->with('success', 'Download deleted successfully.');

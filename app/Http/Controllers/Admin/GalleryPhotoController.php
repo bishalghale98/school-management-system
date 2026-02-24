@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\GalleryAlbum;
 use App\Models\GalleryPhoto;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
 class GalleryPhotoController extends Controller
@@ -57,6 +58,7 @@ class GalleryPhotoController extends Controller
 
     public function destroy(GalleryPhoto $photo): RedirectResponse
     {
+        Storage::disk('public')->delete($photo->image_path);
         $photo->delete();
 
         return back()->with('success', 'Photo deleted.');

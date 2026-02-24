@@ -24,6 +24,8 @@ class SettingsController extends Controller
 
         if ($request->hasFile('logo')) {
             $data['logo'] = $request->file('logo')->store('settings', 'public');
+        } else {
+            unset($data['logo']);
         }
 
         SiteSetting::instance()->update($data);
