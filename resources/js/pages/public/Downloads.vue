@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import PublicLayout from '@/layouts/PublicLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { Download, ExternalLink, FileText, Filter } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
+import PublicLayout from '@/layouts/PublicLayout.vue';
 import type {
     Download as DownloadType,
     DownloadCategory,
@@ -155,9 +155,10 @@ watch(selectedCategory, (val) => {
                               ? 'text-gray-600 hover:bg-gray-100'
                               : 'cursor-default text-gray-300',
                     ]"
-                    v-html="link.label"
                     preserve-scroll
-                />
+                >
+                    <span v-html="link.label" />
+                </Link>
             </nav>
         </div>
     </PublicLayout>

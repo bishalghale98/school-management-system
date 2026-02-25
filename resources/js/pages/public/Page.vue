@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import PublicLayout from '@/layouts/PublicLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { Clock, Download, FileText, ChevronRight } from 'lucide-vue-next';
+import { Clock, Download } from 'lucide-vue-next';
+import PublicLayout from '@/layouts/PublicLayout.vue';
 import type { Page, Post, Download as DownloadType } from '@/types';
 
-const props = defineProps<{
+defineProps<{
     page: Page;
     latestPosts: Post[];
     featuredDownloads: DownloadType[];

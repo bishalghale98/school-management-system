@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import PublicLayout from '@/layouts/PublicLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import {
     ArrowRight,
@@ -13,6 +12,7 @@ import {
     Users,
     ChevronRight,
 } from 'lucide-vue-next';
+import PublicLayout from '@/layouts/PublicLayout.vue';
 import type {
     Post,
     Download as DownloadType,
@@ -20,7 +20,7 @@ import type {
     SiteSettings,
 } from '@/types';
 
-const props = defineProps<{
+defineProps<{
     settings: SiteSettings;
     latestPosts: Post[];
     featuredDownloads: DownloadType[];
