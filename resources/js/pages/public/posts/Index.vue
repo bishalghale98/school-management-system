@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
-
-import { Search, Clock, FileText, ChevronRight, Tag } from 'lucide-vue-next';
+import {
+    Search,
+    Calendar,
+    ChevronRight,
+    Share2,
+    Facebook,
+    Twitter,
+    Linkedin,
+} from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import PublicLayout from '@/layouts/PublicLayout.vue';
-
 import type { Post, PostCategory, PaginatedData } from '@/types';
 
 const props = defineProps<{
@@ -13,16 +19,20 @@ const props = defineProps<{
     filters: { search?: string; category?: string };
 }>();
 
+console.log(props.posts);
+
 const search = ref(props.filters.search ?? '');
-const selectedCategory = ref(props.filters.category ?? '');
 
 let debounceTimer: ReturnType<typeof setTimeout>;
 
 function applyFilters() {
     const params: Record<string, string> = {};
     if (search.value) params.search = search.value;
-    if (selectedCategory.value) params.category = selectedCategory.value;
-    router.get('/news-update', params, { preserveState: true, replace: true });
+    router.get('/news-update', params, {
+        preserveState: true,
+        replace: true,
+        preserveScroll: true,
+    });
 }
 
 watch(search, () => {
@@ -30,213 +40,183 @@ watch(search, () => {
     debounceTimer = setTimeout(applyFilters, 400);
 });
 
-watch(selectedCategory, applyFilters);
-
 function formatDate(date: string) {
     return new Date(date).toLocaleDateString('en-US', {
         year: 'numeric',
-        month: 'short',
+        month: 'long',
         day: 'numeric',
     });
 }
 </script>
 
 <template>
-    <Head title="News & Updates" />
+    <Head title="Notices & Updates" />
     <PublicLayout>
-        <!-- Page Header -->
-        <section
-            class="bg-gradient-to-br from-blue-900 to-indigo-900 py-16 text-white"
-        >
-            <div class="mx-auto max-w-7xl px-4">
-                <h1 class="text-3xl font-bold sm:text-4xl">News & Updates</h1>
-                <p class="mt-2 text-blue-200">
-                    Stay up to date with school announcements
-                </p>
+        <div class="bg-[#1a2b4c] py-12 text-white">
+            <div class="container mx-auto max-w-7xl px-4">
+                <h1
+                    class="text-3xl font-bold tracking-wider uppercase md:text-4xl"
+                >
+                    Notices & Updates
+                </h1>
             </div>
-        </section>
+        </div>
 
-        <div class="mx-auto max-w-7xl px-4 py-10">
-            <div class="lg:flex lg:gap-8">
-                <!-- Main Content -->
-                <div class="flex-1">
-                    <!-- Search -->
-                    <div class="relative mb-6">
-                        <Search
-                            class="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400"
-                        />
-                        <input
-                            v-model="search"
-                            type="text"
-                            placeholder="Search news..."
-                            class="w-full rounded-lg border border-gray-200 bg-white py-3 pr-4 pl-10 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
-                        />
-                    </div>
-
-                    <!-- Empty State -->
-                    <div
-                        v-if="!posts.data.length"
-                        class="rounded-xl bg-gray-50 py-16 text-center"
-                    >
-                        <FileText
-                            class="mx-auto mb-4 h-12 w-12 text-gray-300"
-                        />
-                        <h3 class="text-lg font-semibold text-gray-600">
-                            No posts found
-                        </h3>
-                        <p class="mt-1 text-sm text-gray-400">
-                            Try adjusting your search or filter.
-                        </p>
-                    </div>
-
-                    <!-- Posts Grid -->
-                    <div v-else class="space-y-6">
-                        <Link
-                            v-for="post in posts.data"
-                            :key="post.id"
-                            :href="`/news-update/${post.slug}`"
-                            class="group flex flex-col gap-4 overflow-hidden rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-100 transition hover:shadow-md sm:flex-row"
-                        >
+            <div class="container mx-auto max-w-7xl px-4 py-10">
+                <div class="grid grid-cols-1 gap-12 lg:grid-cols-12">
+                    <div class="lg:col-span-8">
+                        <div class="relative mb-10">
                             <div
-                                class="aspect-[16/9] w-full shrink-0 overflow-hidden rounded-lg bg-gray-100 sm:aspect-square sm:w-40"
+                                class="flex overflow-hidden rounded border border-gray-300 shadow-sm focus-within:ring-2 focus-within:ring-blue-500/20"
                             >
-                                <img
-                                    v-if="post.featured_image"
-                                    :src="`/storage/${post.featured_image}`"
-                                    :alt="post.title"
-                                    class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                                <input
+                                    v-model="search"
+                                    type="text"
+                                    placeholder="Search..."
+                                    class="w-full border-none px-4 py-3 text-sm focus:ring-0 focus:outline-none"
                                 />
-                                <div
-                                    v-else
-                                    class="flex h-full items-center justify-center text-gray-300"
+                                <button
+                                    class="border-l bg-gray-50 px-5 text-gray-500 transition-colors hover:bg-gray-100"
                                 >
-                                    <FileText class="h-8 w-8" />
-                                </div>
+                                    <Search class="h-4 w-4" />
+                                </button>
                             </div>
-                            <div class="flex-1">
-                                <div
-                                    class="mb-2 flex flex-wrap items-center gap-2"
-                                >
-                                    <span
-                                        v-if="post.category"
-                                        class="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700"
+                        </div>
+
+                        <div v-if="posts.data.length" class="space-y-8">
+                            <article
+                                v-for="post in posts.data"
+                                :key="post.id"
+                                class="group overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm transition-all hover:shadow-md"
+                            >
+                                <div class="p-6">
+                                    <h3
+                                        class="mb-3 text-xl font-bold text-[#1a2b4c] uppercase group-hover:text-blue-600"
                                     >
-                                        {{ post.category.name }}
-                                    </span>
-                                    <span
-                                        v-if="post.is_pinned"
-                                        class="rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-medium text-orange-700"
+                                        <Link
+                                            :href="`/news-update/${post.slug}`"
+                                            >{{ post.title }}</Link
+                                        >
+                                    </h3>
+
+                                    <p
+                                        class="mb-4 text-sm leading-relaxed text-gray-600"
                                     >
-                                        Pinned
-                                    </span>
+                                        {{
+                                            post.excerpt ||
+                                            'Successful publication of news from Everest Secondary School...'
+                                        }}
+                                    </p>
+
+                                    <Link
+                                        :href="`/news-update/${post.slug}`"
+                                        class="inline-flex items-center text-xs font-bold tracking-wider text-blue-600 uppercase hover:text-blue-800"
+                                    >
+                                        Read More
+                                        <ChevronRight class="ml-1 h-3 w-3" />
+                                    </Link>
                                 </div>
-                                <h2
-                                    class="mb-1 text-lg font-semibold text-gray-900 group-hover:text-blue-600"
-                                >
-                                    {{ post.title }}
-                                </h2>
-                                <p
-                                    v-if="post.excerpt"
-                                    class="mb-3 line-clamp-2 text-sm text-gray-500"
-                                >
-                                    {{ post.excerpt }}
-                                </p>
+
                                 <div
-                                    class="flex items-center gap-3 text-xs text-gray-400"
+                                    class="flex items-center gap-4 border-t border-gray-50 bg-gray-50/50 px-6 py-3 text-xs text-gray-400"
                                 >
-                                    <span class="flex items-center gap-1">
-                                        <Clock class="h-3.5 w-3.5" />
+                                    <span class="flex items-center gap-1.5">
+                                        <Calendar class="h-3 w-3" />
                                         {{
                                             formatDate(
-                                                post.published_at ??
+                                                post.published_at ||
                                                     post.created_at,
                                             )
                                         }}
                                     </span>
+                                    <span>No Comments</span>
+                                </div>
+                            </article>
+                        </div>
+
+                        <div v-else class="py-20 text-center text-gray-500">
+                            No updates found.
+                        </div>
+
+                        <nav
+                            v-if="posts.last_page > 1"
+                            class="mt-12 flex items-center gap-2"
+                        >
+                            <Link
+                                v-for="link in posts.links"
+                                :key="link.label"
+                                :href="link.url ?? '#'"
+                                class="flex h-10 w-10 items-center justify-center rounded border text-sm font-medium transition-colors"
+                                :class="[
+                                    link.active
+                                        ? 'border-blue-600 bg-blue-600 text-white'
+                                        : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50',
+                                ]"
+                                preserve-scroll
+                            >
+                                <span v-html="link.label" />
+                            </Link>
+                        </nav>
+                    </div>
+
+                    <aside class="lg:col-span-4">
+                        <div class="sticky top-10 space-y-10">
+                            <div class="flex gap-2">
+                                <button
+                                    class="flex h-10 w-10 items-center justify-center bg-[#3b5998] text-white hover:opacity-90"
+                                >
+                                    <Facebook class="h-4 w-4" />
+                                </button>
+                                <button
+                                    class="flex h-10 w-10 items-center justify-center bg-[#1da1f2] text-white hover:opacity-90"
+                                >
+                                    <Twitter class="h-4 w-4" />
+                                </button>
+                                <button
+                                    class="flex h-10 w-10 items-center justify-center bg-[#0077b5] text-white hover:opacity-90"
+                                >
+                                    <Linkedin class="h-4 w-4" />
+                                </button>
+                                <button
+                                    class="flex h-10 w-10 items-center justify-center bg-[#25d366] text-white hover:opacity-90"
+                                >
+                                    <Share2 class="h-4 w-4" />
+                                </button>
+                            </div>
+
+                            <div>
+                                <h2
+                                    class="mb-6 border-b pb-2 text-lg font-bold text-[#1a2b4c]"
+                                >
+                                    Most Popular:
+                                </h2>
+                                <div class="space-y-6">
+                                    <div
+                                        v-for="post in posts.data.slice(0, 5)"
+                                        :key="'pop-' + post.id"
+                                        class="group"
+                                    >
+                                        <h4
+                                            class="text-sm leading-tight font-bold text-[#1a2b4c] uppercase group-hover:text-blue-600"
+                                        >
+                                            <Link
+                                                :href="`/news-update/${post.slug}`"
+                                                >{{ post.title }}</Link
+                                            >
+                                        </h4>
+                                        <Link
+                                            :href="`/news-update/${post.slug}`"
+                                            class="mt-1 inline-flex items-center text-[10px] font-bold text-blue-600 uppercase"
+                                        >
+                                            Read More »
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="hidden items-center sm:flex">
-                                <ChevronRight
-                                    class="h-5 w-5 text-gray-300 transition group-hover:text-blue-500"
-                                />
-                            </div>
-                        </Link>
-                    </div>
-
-                    <!-- Pagination -->
-                    <nav
-                        v-if="posts.last_page > 1"
-                        class="mt-8 flex items-center justify-center gap-1"
-                    >
-                        <Link
-                            v-for="link in posts.links"
-                            :key="link.label"
-                            :href="link.url ?? '#'"
-                            :class="[
-                                'rounded-lg px-3 py-2 text-sm font-medium transition',
-                                link.active
-                                    ? 'bg-blue-600 text-white'
-                                    : link.url
-                                      ? 'text-gray-600 hover:bg-gray-100'
-                                      : 'cursor-default text-gray-300',
-                            ]"
-                            preserve-scroll
-                        >
-                            <span v-html="link.label" />
-                        </Link>
-                    </nav>
-                </div>
-
-                <!-- Sidebar -->
-                <aside class="mt-8 w-full shrink-0 lg:mt-0 lg:w-64">
-                    <div class="sticky top-24 space-y-6">
-                        <!-- Categories -->
-                        <div
-                            class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-100"
-                        >
-                            <h3
-                                class="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900"
-                            >
-                                <Tag class="h-4 w-4" />
-                                Categories
-                            </h3>
-                            <ul class="space-y-1">
-                                <li>
-                                    <button
-                                        @click="selectedCategory = ''"
-                                        :class="[
-                                            'flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition',
-                                            !selectedCategory
-                                                ? 'bg-blue-50 font-medium text-blue-700'
-                                                : 'text-gray-600 hover:bg-gray-50',
-                                        ]"
-                                    >
-                                        All
-                                    </button>
-                                </li>
-                                <li v-for="cat in categories" :key="cat.id">
-                                    <button
-                                        @click="
-                                            selectedCategory = String(cat.id)
-                                        "
-                                        :class="[
-                                            'flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition',
-                                            selectedCategory === String(cat.id)
-                                                ? 'bg-blue-50 font-medium text-blue-700'
-                                                : 'text-gray-600 hover:bg-gray-50',
-                                        ]"
-                                    >
-                                        {{ cat.name }}
-                                        <span class="text-xs text-gray-400">{{
-                                            cat.posts_count ?? 0
-                                        }}</span>
-                                    </button>
-                                </li>
-                            </ul>
                         </div>
-                    </div>
-                </aside>
+                    </aside>
+                </div>
             </div>
-        </div>
     </PublicLayout>
 </template>
+
