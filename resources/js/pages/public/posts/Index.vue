@@ -180,9 +180,10 @@ function formatDate(date: string) {
                                       ? 'text-gray-600 hover:bg-gray-100'
                                       : 'cursor-default text-gray-300',
                             ]"
-                            v-html="link.label"
                             preserve-scroll
-                        />
+                        >
+                            <span v-html="link.label" />
+                        </Link>
                     </nav>
                 </div>
 

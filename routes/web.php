@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PublicSite\AboutController;
 use App\Http\Controllers\PublicSite\AdmissionController;
 use App\Http\Controllers\PublicSite\ContactController;
 use App\Http\Controllers\PublicSite\DownloadController;
@@ -35,6 +36,8 @@ Route::post('admission', [AdmissionController::class, 'store'])->name('admission
 // Contact
 Route::get('contact-us', [ContactController::class, 'show'])->name('contact.show');
 Route::post('contact-us', [ContactController::class, 'store'])->name('contact.store')->middleware('throttle:5,1');
+
+Route::get('about-us', [AboutController::class, 'show'])->name('about.show');
 
 // Dynamic pages (must be last — catches /{slug})
 Route::get('{slug}', [PageController::class, 'show'])->name('pages.show')->where('slug', '(?!login|register|logout|forgot-password|reset-password|email|user|admin|settings|dashboard|sanctum|_boost)[a-z0-9\-]+');

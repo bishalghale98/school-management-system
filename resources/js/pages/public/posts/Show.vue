@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import PublicLayout from '@/layouts/PublicLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import {
     ArrowLeft,
     Calendar,
-    Tag,
     Download,
     FileText,
     Paperclip,
 } from 'lucide-vue-next';
+import PublicLayout from '@/layouts/PublicLayout.vue';
 import type { Post } from '@/types';
 
-const props = defineProps<{
+defineProps<{
     post: Post;
     meta: {
         title: string;

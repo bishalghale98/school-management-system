@@ -12,7 +12,7 @@ import { computed } from 'vue';
 import PublicLayout from '@/layouts/PublicLayout.vue';
 import type { SiteSettings } from '@/types';
 
-const props = defineProps<{
+defineProps<{
     settings: SiteSettings;
 }>();
 
