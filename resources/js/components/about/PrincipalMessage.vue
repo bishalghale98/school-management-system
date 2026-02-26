@@ -1,17 +1,31 @@
 <script setup lang="ts">
 import { Quote, Award, BookOpen, Users } from 'lucide-vue-next';
+import { computed } from 'vue';
+import type { SiteSettings } from '@/types';
 
-const principalData = {
-    name: 'Mr. Ram Prasad Sharma',
-    title: 'Principal',
-    credentials: 'M.Ed. (Education Management)',
-    experience: '25+ Years of Educational Leadership',
-    message: [
-        'It is my distinct honor to welcome you to XYZ School. Our institution is built on the belief that every child possesses a unique brilliance that, when nurtured with care and the right tools, can illuminate the world.',
-        "We don't just aim for academic results; we aim for character. In an era of rapid technological change, we ensure our students are grounded in ethics while being equipped with 21st-century skills—critical thinking, digital literacy, and emotional intelligence.",
-        "Our doors are always open to parents and well-wishers who share our vision of holistic excellence. Together, let us guide our children toward a future where they don't just find jobs, but create impact.",
-    ],
-};
+const props = defineProps<{
+    settings?: SiteSettings | null;
+}>();
+
+const principalData = computed(() => ({
+    name: props.settings?.principal_name || 'Mr. Ram Prasad Sharma',
+    title: props.settings?.principal_title || 'Principal',
+    credentials:
+        props.settings?.principal_credentials || 'M.Ed. (Education Management)',
+    experience:
+        props.settings?.principal_experience ||
+        '25+ Years of Educational Leadership',
+    image: props.settings?.principal_image
+        ? `/storage/${props.settings.principal_image}`
+        : 'https://thumbs.dreamstime.com/b/african-american-man-wearing-winter-coat-28594045.jpg',
+    message: props.settings?.principal_message?.length
+        ? props.settings.principal_message
+        : [
+              'It is my distinct honor to welcome you to our school. Our institution is built on the belief that every child possesses a unique brilliance that, when nurtured with care and the right tools, can illuminate the world.',
+              "We don't just aim for academic results; we aim for character. In an era of rapid technological change, we ensure our students are grounded in ethics while being equipped with 21st-century skills — critical thinking, digital literacy, and emotional intelligence.",
+              "Our doors are always open to parents and well-wishers who share our vision of holistic excellence. Together, let us guide our children toward a future where they don't just find jobs, but create impact.",
+          ],
+}));
 </script>
 
 <template>
@@ -35,7 +49,7 @@ const principalData = {
                             class="relative z-10 h-64 w-52 overflow-hidden rounded-2xl border-4 border-slate-800 shadow-2xl transition-transform duration-500 hover:scale-[1.03]"
                         >
                             <img
-                                src="https://thumbs.dreamstime.com/b/african-american-man-wearing-winter-coat-28594045.jpg"
+                                :src="principalData.image"
                                 :alt="principalData.name"
                                 class="h-full w-full object-cover grayscale transition-all duration-700 hover:grayscale-0"
                             />
@@ -108,10 +122,10 @@ const principalData = {
                                 <p
                                     class="mt-2 font-serif text-3xl text-slate-900"
                                 >
-                                    R.P. Sharma
+                                    {{ principalData.name }}
                                 </p>
                                 <p class="text-sm font-semibold text-slate-500">
-                                    {{ principalData.name }}
+                                    {{ principalData.title }}
                                 </p>
                             </div>
 

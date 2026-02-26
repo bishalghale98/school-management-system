@@ -8,8 +8,14 @@ import {
     Music,
     ArrowRight,
 } from 'lucide-vue-next';
+import { computed } from 'vue';
+import type { FacilityItem } from '@/types';
 
-const facilities = [
+const props = defineProps<{
+    facilities?: FacilityItem[] | null;
+}>();
+
+const defaultFacilities = [
     {
         title: 'Digital Classrooms',
         desc: 'Interactive smart boards and ergonomic furniture designed for collaborative learning and student engagement.',
@@ -47,10 +53,24 @@ const facilities = [
         color: 'pink',
     },
 ];
+
+const icons = [School, Microscope, Monitor, BookOpen, Trophy, Music];
+
+const facilitiesData = computed(() => {
+    if (props.facilities && props.facilities.length > 0) {
+        return props.facilities.map((f, i) => ({
+            title: f.title,
+            desc: f.description,
+            icon: icons[i % icons.length],
+            color: ['green', 'blue', 'indigo', 'orange', 'red', 'pink'][i % 6],
+        }));
+    }
+    return defaultFacilities;
+});
 </script>
 
 <template>
-    <section class="relative ">
+    <section class="relative">
         <div
             class="absolute inset-0 -z-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] [background-size:32px_32px]"
         ></div>
@@ -69,7 +89,7 @@ const facilities = [
 
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <div
-                v-for="item in facilities"
+                v-for="item in facilitiesData"
                 :key="item.title"
                 class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 transition-all duration-300 hover:border-school-500 hover:shadow-2xl hover:shadow-school-100"
             >
@@ -103,7 +123,5 @@ const facilities = [
                 </div>
             </div>
         </div>
-
-       
     </section>
 </template>

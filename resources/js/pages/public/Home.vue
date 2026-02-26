@@ -25,14 +25,24 @@ defineProps<{
 <template>
     <Head :title="settings?.site_name ?? 'Welcome'" />
     <PublicLayout>
-        <CarouselSection />
+        <CarouselSection :slides="settings.carousel_slides" />
 
-        <Features />
+        <Features :features="settings.features" />
 
-        <FacilityGrid />
+        <FacilityGrid :facilities="settings.facilities" />
 
-        <PrincipleMessage />
+        <PrincipleMessage :settings="settings" />
 
-        <WelcomeSection />
+        <WelcomeSection
+            :title="settings.welcome_title"
+            :subtitle="settings.welcome_subtitle"
+            :description="settings.welcome_description"
+            :image="
+                settings.welcome_image
+                    ? `/storage/${settings.welcome_image}`
+                    : undefined
+            "
+            :stats="settings.stats"
+        />
     </PublicLayout>
 </template>

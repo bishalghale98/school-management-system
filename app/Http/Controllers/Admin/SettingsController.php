@@ -22,10 +22,32 @@ class SettingsController extends Controller
     {
         $data = $request->validated();
 
-        if ($request->hasFile('logo')) {
-            $data['logo'] = $request->file('logo')->store('settings', 'public');
-        } else {
-            unset($data['logo']);
+        // Handle file uploads
+        $imageFields = [
+            'logo' => 'settings',
+            'about_image' => 'settings',
+            'principal_image' => 'settings',
+            'welcome_image' => 'settings',
+        ];
+
+        foreach ($imageFields as $field => $disk) {
+            if ($request->hasFile($field)) {
+                $data[$field] = $request->file($field)->store($disk, 'public');
+            } else {
+                unset($data[$field]);
+            }
+        }
+
+        // Handle carousel slide image uploads
+        if (!empty($data['carousel_slides'])) {
+            foreach ($data['carousel_slides'] as $index => &$slide) {
+                $fileKey = "carousel_slides.{$index}.image";
+                if ($request->hasFile($fileKey)) {
+                    $slide['image'] = $request->file($fileKey)->store('settings/carousel', 'public');
+                }
+                // If it's already a string path, keep it as-is
+            }
+            unset($slide);
         }
 
         SiteSetting::instance()->update($data);

@@ -1,174 +1,147 @@
 <script setup lang="ts">
-import { ArrowRight, Award, Users, Building2 } from 'lucide-vue-next';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Award, Users2, TrendingUp, ArrowRight } from 'lucide-vue-next';
+import { computed } from 'vue';
+import type { FeatureItem } from '@/types';
 
-const featuresData = [
-    {
-        id: 1,
-        title: 'Award & Recognition',
-        description:
-            'Everest Secondary School has succeeded in bagging four Regional Shields and one National Shield for outstanding scholastic performance.',
-        image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80',
-        badge: 'Top Ranked',
-        icon: Award,
-        metric: '5 Shields',
-        stats: 'National Winner',
-        color: 'from-amber-500/20',
-    },
-    {
-        id: 2,
-        title: 'Team of Professionals',
-        description:
-            'We hire subject experts and professional trainers to equip teachers with contemporary teaching methods and digital tools.',
-        image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80',
-        badge: 'Expert Faculty',
-        icon: Users,
-        metric: '50+ Experts',
-        stats: 'PhD & Masters',
-        color: 'from-blue-500/20',
-    },
-    {
-        id: 3,
-        title: 'Ambient Infrastructure',
-        description:
-            'Spacious, well-ventilated classrooms digitized with latest technology and fully equipped specialized science and math labs.',
-        image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80',
-        badge: 'Smart Campus',
-        icon: Building2,
-        metric: '20+ Labs',
-        stats: 'Tech Enabled',
-        color: 'from-emerald-500/20',
-    },
-];
+const props = defineProps<{
+    features?: FeatureItem[] | null;
+}>();
+
+const defaultFeatures: (FeatureItem & { icon: typeof Award; color: string })[] =
+    [
+        {
+            title: 'Award & Recognition',
+            description:
+                'Our school has succeeded in bagging multiple Regional Shields and National Shields for outstanding scholastic performance.',
+            image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80',
+            badge: 'Top Ranked',
+            icon: Award,
+            metric: '5 Shields',
+            stats: 'National Winner',
+            color: 'from-amber-500/20',
+        },
+        {
+            title: 'Experienced Faculty',
+            description:
+                'Our dedicated team of highly qualified teachers brings decades of expertise, ensuring every student receives mentorship that goes beyond textbooks.',
+            image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80',
+            badge: 'Expert Team',
+            icon: Users2,
+            metric: '50+',
+            stats: 'Qualified Teachers',
+            color: 'from-blue-500/20',
+        },
+        {
+            title: 'Holistic Development',
+            description:
+                'From sports to arts, debate to community service, our programs nurture well-rounded individuals who lead with confidence and empathy.',
+            image: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80',
+            badge: 'All-Round',
+            icon: TrendingUp,
+            metric: '30+',
+            stats: 'ECA Programs',
+            color: 'from-emerald-500/20',
+        },
+    ];
+
+const icons = [Award, Users2, TrendingUp];
+const colors = ['from-amber-500/20', 'from-blue-500/20', 'from-emerald-500/20'];
+
+const featuresData = computed(() => {
+    if (props.features && props.features.length > 0) {
+        return props.features.map((f, i) => ({
+            ...f,
+            icon: icons[i % icons.length],
+            color: colors[i % colors.length],
+        }));
+    }
+    return defaultFeatures;
+});
 </script>
 
 <template>
-    <div class="min-h-screen bg-slate-50 p-8">
-        <div class="mx-auto max-w-7xl">
-            <div class="mb-12 space-y-4">
-                <Badge
-                    variant="outline"
-                    class="rounded-full border-primary/20 bg-primary/5 px-4 py-1 text-[10px] font-bold tracking-widest text-primary uppercase"
-                >
-                    Our Excellence
-                </Badge>
-                <h2
-                    class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl"
-                >
-                    Why Choose <span class="text-gray-800">Everest?</span>
-                </h2>
-                <p class="max-w-2xl text-lg text-slate-600">
-                    Combining traditional values with modern technology to
-                    create a world-class learning environment.
-                </p>
-            </div>
+    <section class="mx-auto max-w-7xl px-6 py-20">
+        <div class="mb-16 text-center">
+            <span
+                class="mb-4 inline-block rounded-full bg-school-50 px-4 py-1.5 text-xs font-bold tracking-wider text-school-700 uppercase"
+                >Why Choose Us</span
+            >
+            <h2
+                class="text-4xl font-extrabold tracking-tight text-slate-900 md:text-5xl"
+            >
+                What Makes Us
+                <span class="text-school-600">Different</span>
+            </h2>
+        </div>
 
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                <Card
-                    v-for="feature in featuresData"
-                    :key="feature.id"
-                    class="group relative flex flex-col overflow-hidden border-slate-200 bg-white transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10"
-                >
-                    <div
-                        class="absolute inset-0 z-10 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-[100%]"
-                    ></div>
-
-                    <div class="relative h-64 overflow-hidden">
-                        <img
-                            :src="feature.image"
-                            :alt="feature.title"
-                            class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                        />
-
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80"
-                        ></div>
-                        <div
-                            :class="[
-                                'absolute inset-0 bg-gradient-to-br opacity-40 transition-opacity group-hover:opacity-60',
-                                feature.color,
-                            ]"
-                        ></div>
-
-                        <div
-                            class="absolute top-4 right-4 left-4 flex items-start justify-between"
-                        >
-                            <div class="flex items-center gap-2">
-                                <div
-                                    class="flex h-10 w-10 items-center justify-center rounded-xl border border-white/20 bg-white/10 backdrop-blur-md"
-                                >
-                                    <component
-                                        :is="feature.icon"
-                                        class="h-5 w-5 text-white"
-                                    />
-                                </div>
-                                <Badge
-                                    class="border-none bg-white/90 font-bold text-slate-900 backdrop-blur-sm"
-                                >
-                                    {{ feature.badge }}
-                                </Badge>
+        <div class="space-y-20">
+            <div
+                v-for="(feature, index) in featuresData"
+                :key="index"
+                class="group grid items-center gap-12 lg:grid-cols-2"
+                :class="{ 'lg:direction-reverse': index % 2 !== 0 }"
+            >
+                <div :class="index % 2 !== 0 ? 'lg:order-2' : ''">
+                    <div class="relative">
+                        <div class="mb-4 flex items-center gap-3">
+                            <div
+                                class="flex h-12 w-12 items-center justify-center rounded-2xl bg-school-600 text-white shadow"
+                            >
+                                <component :is="feature.icon" class="h-6 w-6" />
                             </div>
+                            <span
+                                v-if="feature.badge"
+                                class="rounded-full bg-school-50 px-3 py-1 text-xs font-bold text-school-700"
+                                >{{ feature.badge }}</span
+                            >
                         </div>
 
-                        <div class="absolute right-6 bottom-6 left-6">
-                            <div class="space-y-1">
-                                <p
-                                    class="text-3xl font-black tracking-tighter text-white"
-                                >
+                        <h3 class="mb-4 text-3xl font-bold text-slate-900">
+                            {{ feature.title }}
+                        </h3>
+
+                        <p class="mb-6 text-lg leading-relaxed text-slate-600">
+                            {{ feature.description }}
+                        </p>
+
+                        <div class="mb-6 flex items-center gap-6">
+                            <div v-if="feature.metric">
+                                <p class="text-2xl font-bold text-school-600">
                                     {{ feature.metric }}
                                 </p>
                                 <p
-                                    class="text-xs font-medium tracking-widest text-white/70 uppercase"
+                                    v-if="feature.stats"
+                                    class="text-sm font-medium text-slate-500"
                                 >
                                     {{ feature.stats }}
                                 </p>
                             </div>
                         </div>
+
+                        <a
+                            href="/about-us"
+                            class="inline-flex items-center gap-2 text-sm font-bold text-school-600 transition-all hover:gap-3"
+                        >
+                            Learn More
+                            <ArrowRight class="h-4 w-4" />
+                        </a>
                     </div>
+                </div>
 
-                    <CardHeader class="flex-1 space-y-3 p-6">
-                        <CardTitle
-                            class="text-xl font-bold text-slate-900 transition-colors group-hover:text-gray-800"
-                        >
-                            {{ feature.title }}
-                        </CardTitle>
-                        <p
-                            class="line-clamp-3 text-sm leading-relaxed text-slate-600"
-                        >
-                            {{ feature.description }}
-                        </p>
-                    </CardHeader>
-
-                    <div class="mt-auto p-6 pt-0">
-                        <Button
-                            variant="secondary"
-                            class="group/btn w-full justify-between bg-slate-100 text-gray-800 transition-all duration-300 hover:bg-gray-800 hover:text-white"
-                        >
-                            <span
-                                class="text-xs font-semibold tracking-wider uppercase"
-                                >Learn More</span
-                            >
-                            <ArrowRight
-                                class="h-4 w-4 transition-transform group-hover/btn:translate-x-1"
-                            />
-                        </Button>
+                <div :class="index % 2 !== 0 ? 'lg:order-1' : ''">
+                    <div class="group/img relative overflow-hidden rounded-3xl">
+                        <img
+                            :src="feature.image"
+                            :alt="feature.title"
+                            class="h-[400px] w-full object-cover transition-transform duration-700 group-hover/img:scale-110"
+                        />
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t opacity-30"
+                            :class="feature.color"
+                        ></div>
                     </div>
-
-                    <div
-                        class="h-1 w-0 bg-primary transition-all duration-500 group-hover:w-full"
-                    ></div>
-                </Card>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 </template>
-
-<style scoped>
-/* Added for extra-smooth text rendering on high-res screens */
-h2,
-p {
-    text-rendering: optimizeLegibility;
-}
-</style>

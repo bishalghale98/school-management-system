@@ -134,6 +134,32 @@ export interface ContactMessage {
     updated_at: string;
 }
 
+export interface CarouselSlide {
+    image: string;
+    title: string;
+    description: string;
+}
+
+export interface FeatureItem {
+    title: string;
+    description: string;
+    image: string;
+    badge: string;
+    metric: string;
+    stats: string;
+}
+
+export interface FacilityItem {
+    title: string;
+    description: string;
+    image: string;
+}
+
+export interface StatItem {
+    value: string;
+    label: string;
+}
+
 export interface SiteSettings {
     id: number;
     site_name: string;
@@ -148,8 +174,35 @@ export interface SiteSettings {
     youtube_url: string | null;
     twitter_url: string | null;
     instagram_url: string | null;
+    whatsapp_url: string | null;
+    linkedin_url: string | null;
     map_url: string | null;
     map_embed_code: string | null;
+    office_hours: string | null;
+    established_year: string | null;
+    about_description: string | null;
+    about_quote: string | null;
+    about_image: string | null;
+    mission_title: string | null;
+    mission_subtitle: string | null;
+    mission_description: string | null;
+    vision_title: string | null;
+    vision_subtitle: string | null;
+    vision_description: string | null;
+    principal_name: string | null;
+    principal_title: string | null;
+    principal_credentials: string | null;
+    principal_experience: string | null;
+    principal_image: string | null;
+    principal_message: string[] | null;
+    stats: StatItem[] | null;
+    carousel_slides: CarouselSlide[] | null;
+    features: FeatureItem[] | null;
+    facilities: FacilityItem[] | null;
+    welcome_title: string | null;
+    welcome_subtitle: string | null;
+    welcome_description: string | null;
+    welcome_image: string | null;
 }
 
 export interface PaginatedData<T> {

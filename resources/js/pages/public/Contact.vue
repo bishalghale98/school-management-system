@@ -128,7 +128,7 @@
                                     </p>
                                 </div>
                             </div>
-                            <!-- Office Hours (static example) -->
+                            <!-- Office Hours -->
                             <div class="flex items-start space-x-3">
                                 <Clock
                                     class="mt-1 h-5 w-5 shrink-0 text-slate-600"
@@ -138,14 +138,17 @@
                                         Office Hours
                                     </h3>
                                     <p class="text-slate-600">
-                                        Sunday - Friday<br />9:00 AM - 4:00 PM
+                                        {{
+                                            settings?.office_hours ||
+                                            'Sunday - Friday, 9:00 AM - 4:00 PM'
+                                        }}
                                     </p>
                                 </div>
                             </div>
                         </CardContent>
                     </Card>
 
-                    <!-- Follow Us card (static example) -->
+                    <!-- Follow Us card -->
                     <Card class="mt-6 shadow-sm">
                         <CardHeader>
                             <CardTitle class="text-xl text-slate-800"
@@ -155,31 +158,46 @@
                         <CardContent>
                             <div class="flex space-x-4">
                                 <a
-                                    href="#"
+                                    v-if="settings?.facebook_url"
+                                    :href="settings.facebook_url"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     class="rounded bg-slate-100 p-2 transition-colors hover:bg-blue-600 hover:text-white"
                                 >
                                     <Facebook class="h-5 w-5" />
                                 </a>
                                 <a
-                                    href="#"
+                                    v-if="settings?.twitter_url"
+                                    :href="settings.twitter_url"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     class="rounded bg-slate-100 p-2 transition-colors hover:bg-blue-400 hover:text-white"
                                 >
                                     <Twitter class="h-5 w-5" />
                                 </a>
                                 <a
-                                    href="#"
+                                    v-if="settings?.youtube_url"
+                                    :href="settings.youtube_url"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     class="rounded bg-slate-100 p-2 transition-colors hover:bg-red-600 hover:text-white"
                                 >
                                     <Youtube class="h-5 w-5" />
                                 </a>
                                 <a
-                                    href="#"
+                                    v-if="settings?.whatsapp_url"
+                                    :href="settings.whatsapp_url"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     class="rounded bg-slate-100 p-2 transition-colors hover:bg-green-600 hover:text-white"
                                 >
                                     <MessageCircle class="h-5 w-5" />
                                 </a>
                                 <a
-                                    href="#"
+                                    v-if="settings?.linkedin_url"
+                                    :href="settings.linkedin_url"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     class="rounded bg-slate-100 p-2 transition-colors hover:bg-blue-700 hover:text-white"
                                 >
                                     <Linkedin class="h-5 w-5" />

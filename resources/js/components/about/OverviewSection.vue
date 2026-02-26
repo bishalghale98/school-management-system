@@ -1,6 +1,50 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+import type { SiteSettings } from '@/types';
+
+const props = defineProps<{
+    settings?: SiteSettings | null;
+}>();
+
+const established = computed(
+    () => props.settings?.established_year || 'Since 1998',
+);
+const yearsNum = computed(() => {
+    const match = established.value.match(/\d{4}/);
+    if (match) {
+        return `${new Date().getFullYear() - parseInt(match[0])}+`;
+    }
+    return '25+';
+});
+const quote = computed(
+    () =>
+        props.settings?.about_quote ||
+        '"Our School has been a cornerstone of quality education, shaping the leaders of tomorrow."',
+);
+const description = computed(
+    () =>
+        props.settings?.about_description ||
+        "Our school offers education from Grade 1 to Grade 12, following the national curriculum while incorporating modern teaching methodologies. We don't just teach; we inspire curiosity and foster character development through innovative learning approaches and holistic development programs.",
+);
+const aboutImage = computed(() =>
+    props.settings?.about_image
+        ? `/storage/${props.settings.about_image}`
+        : 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=2070&auto=format&fit=crop',
+);
+const stats = computed(() =>
+    props.settings?.stats && props.settings.stats.length > 0
+        ? props.settings.stats
+        : [
+              { value: yearsNum.value, label: 'Years of Excellence' },
+              { value: '1.2k+', label: 'Active Students' },
+              { value: '100%', label: 'SEE/SLC Success' },
+          ],
+);
+</script>
+
 <template>
-    <section id="overview" class="relative scroll-mt-20 overflow-hidden ">
-        <!-- Enhanced Background Elements -->
+    <section id="overview" class="relative scroll-mt-20 overflow-hidden">
+        <!-- Background Elements -->
         <div
             class="absolute top-0 right-0 -z-10 h-96 w-96 rounded-full bg-gradient-to-bl from-school-100/50 to-school-200/50 blur-3xl"
         ></div>
@@ -21,7 +65,7 @@
             <!-- Content Section -->
             <div class="order-2 lg:order-1 lg:col-span-7">
                 <div class="relative">
-                    <!-- Enhanced Badge -->
+                    <!-- Badge -->
                     <span
                         class="mb-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-school-600 to-school-700 px-5 py-2 text-sm font-semibold tracking-wide text-white shadow-lg"
                     >
@@ -36,10 +80,10 @@
                                 clip-rule="evenodd"
                             />
                         </svg>
-                        Since 1998
+                        {{ established }}
                     </span>
 
-                    <!-- Enhanced Headline -->
+                    <!-- Headline -->
                     <h2
                         class="mb-6 text-4xl font-extrabold tracking-tight text-slate-400 md:text-5xl lg:text-6xl"
                     >
@@ -47,7 +91,7 @@
                         <span class="relative inline-block">
                             <span
                                 class="relative z-10 bg-gradient-to-r from-school-600 to-school-700 bg-clip-text text-transparent"
-                                >25+ Years</span
+                                >{{ yearsNum }} Years</span
                             >
                             <svg
                                 class="absolute -bottom-2 left-0 h-3 w-full"
@@ -65,7 +109,7 @@
                         </span>
                     </h2>
 
-                    <!-- Enhanced Quote -->
+                    <!-- Quote & Description -->
                     <div class="mb-8 space-y-6 text-lg leading-relaxed">
                         <div
                             class="relative rounded-2xl bg-gradient-to-r from-school-50 to-school-100 p-6 shadow-inner"
@@ -82,62 +126,36 @@
                             <p
                                 class="relative z-10 pl-8 text-lg font-medium text-school-800"
                             >
-                                "XYZ School has been a cornerstone of quality
-                                education in Biratnagar, Morang, shaping the
-                                leaders of tomorrow."
+                                {{ quote }}
                             </p>
                         </div>
 
                         <p class="leading-relaxed text-slate-400">
-                            Our school offers education from Grade 1 to Grade
-                            12, following the national curriculum while
-                            incorporating modern teaching methodologies. We
-                            don't just teach; we inspire curiosity and foster
-                            character development through innovative learning
-                            approaches and holistic development programs.
+                            {{ description }}
                         </p>
                     </div>
 
-                    <!-- Enhanced Stats Section -->
+                    <!-- Stats Section -->
                     <div
                         class="mt-12 grid grid-cols-2 gap-8 rounded-2xl bg-white/80 p-8 shadow-lg backdrop-blur-sm sm:grid-cols-3"
                     >
-                        <div class="text-center sm:text-left">
-                            <p
-                                class="bg-gradient-to-r from-school-600 to-school-700 bg-clip-text text-3xl font-bold text-transparent"
-                            >
-                                25+
-                            </p>
-                            <p class="mt-1 text-sm font-medium text-slate-500">
-                                Years of Excellence
-                            </p>
-                            <div
-                                class="mt-2 h-1 w-full rounded-full bg-gradient-to-r from-school-200 to-school-300"
-                            ></div>
-                        </div>
-                        <div class="text-center sm:text-left">
-                            <p
-                                class="bg-gradient-to-r from-school-600 to-school-700 bg-clip-text text-3xl font-bold text-transparent"
-                            >
-                                1.2k+
-                            </p>
-                            <p class="mt-1 text-sm font-medium text-slate-500">
-                                Active Students
-                            </p>
-                            <div
-                                class="mt-2 h-1 w-full rounded-full bg-gradient-to-r from-school-200 to-school-300"
-                            ></div>
-                        </div>
                         <div
-                            class="col-span-2 text-center sm:col-span-1 sm:text-left"
+                            v-for="(stat, i) in stats"
+                            :key="i"
+                            class="text-center sm:text-left"
+                            :class="{
+                                'col-span-2 sm:col-span-1':
+                                    i === stats.length - 1 &&
+                                    stats.length % 2 !== 0,
+                            }"
                         >
                             <p
                                 class="bg-gradient-to-r from-school-600 to-school-700 bg-clip-text text-3xl font-bold text-transparent"
                             >
-                                100%
+                                {{ stat.value }}
                             </p>
                             <p class="mt-1 text-sm font-medium text-slate-500">
-                                SEE/SLC Success
+                                {{ stat.label }}
                             </p>
                             <div
                                 class="mt-2 h-1 w-full rounded-full bg-gradient-to-r from-school-200 to-school-300"
@@ -149,7 +167,6 @@
 
             <!-- Image Section -->
             <div class="relative order-1 lg:order-2 lg:col-span-5">
-                <!-- Main Image Card -->
                 <div class="group relative">
                     <div
                         class="absolute -inset-1 rounded-[3rem] bg-gradient-to-r from-school-600 to-school-700 opacity-20 blur transition duration-1000 group-hover:opacity-30"
@@ -158,18 +175,17 @@
                         class="relative overflow-hidden rounded-[2.5rem] shadow-2xl transition-all duration-700 group-hover:scale-[1.02] group-hover:shadow-school-200/50"
                     >
                         <img
-                            src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=2070&auto=format&fit=crop"
+                            :src="aboutImage"
                             alt="Students in Classroom"
                             class="h-[500px] w-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
-                        <!-- Overlay Gradient -->
                         <div
                             class="absolute inset-0 bg-gradient-to-t from-school-900/20 via-transparent to-transparent"
                         ></div>
                     </div>
                 </div>
 
-                <!-- Enhanced Floating Card -->
+                <!-- Floating Card -->
                 <div
                     class="animate-bounce-slow absolute -bottom-6 -left-6 z-20 hidden rounded-2xl bg-white p-5 shadow-2xl shadow-school-200/50 sm:block lg:-left-10"
                 >
@@ -209,8 +225,6 @@
                 <div
                     class="absolute -right-8 -bottom-8 h-32 w-32 rounded-full bg-gradient-to-tl from-blue-200 to-cyan-200 opacity-30 blur-2xl"
                 ></div>
-
-                <!-- Floating Shapes -->
                 <div
                     class="absolute top-20 -right-4 h-16 w-16 animate-pulse rounded-full bg-gradient-to-r from-school-400 to-school-500 opacity-20 blur-lg"
                 ></div>

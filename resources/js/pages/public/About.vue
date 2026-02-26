@@ -1,108 +1,80 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
+
 import FacilitiesSection from '@/components/about/FacilitiesSection.vue';
 import MissionVision from '@/components/about/MissionVision.vue';
 import OverviewSection from '@/components/about/OverviewSection.vue';
 import PrincipalMessage from '@/components/about/PrincipalMessage.vue';
 import PublicLayout from '@/layouts/PublicLayout.vue';
+import type { SiteSettings } from '@/types';
 
-const schoolName = 'Saraswati Secondary School';
+const props = defineProps<{
+    settings: SiteSettings;
+}>();
+
+const schoolName = props.settings?.site_name ?? 'Our School';
 </script>
 
 <template>
-    <Head>
-        <title>About Us | {{ schoolName }}</title>
-        <meta
-            name="description"
-            content="Discover the history, mission, and academic excellence of Saraswati Secondary School."
-        />
-    </Head>
-
+    <Head :title="`About Us — ${schoolName}`" />
     <PublicLayout>
-        <div class="relative overflow-hidden bg-slate-900 py-24 text-white">
+        <!-- Hero Banner -->
+        <section
+            class="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-24 text-white md:py-32"
+        >
             <div
-                class="absolute inset-0 opacity-20"
-                style="
-                    background-image: url('data:image/svg+xml,...');
-                    background-size: 30px 30px;
-                "
+                class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-school-600/20 via-transparent to-transparent"
+            ></div>
+            <div
+                class="absolute right-0 bottom-0 h-80 w-80 translate-x-1/2 translate-y-1/2 rounded-full bg-school-500/10 blur-3xl"
             ></div>
 
-            <div
-                class="relative z-10 container mx-auto max-w-7xl px-4 text-center"
-            >
-                <nav
-                    class="mb-4 flex justify-center space-x-2 text-sm font-medium tracking-widest text-school-400 uppercase"
+            <div class="relative z-10 mx-auto max-w-7xl px-6 text-center">
+                <span
+                    class="mb-6 inline-block rounded-full bg-white/10 px-5 py-2 text-xs font-bold tracking-widest uppercase backdrop-blur-sm"
+                    >About Us</span
                 >
-                    <span>Home</span>
-                    <span>/</span>
-                    <span class="text-white">About Us</span>
-                </nav>
                 <h1
-                    class="mb-6 text-5xl font-extrabold tracking-tight md:text-7xl"
+                    class="mx-auto mb-6 max-w-4xl text-5xl font-extrabold tracking-tight md:text-7xl"
                 >
-                    Our <span class="text-school-500">Story</span> & Legacy
+                    {{ schoolName }}
                 </h1>
                 <p
-                    class="mx-auto max-w-2xl text-lg leading-relaxed text-slate-300 md:text-xl"
+                    class="mx-auto max-w-2xl text-lg leading-relaxed text-slate-300"
                 >
-                    Dedicated to academic excellence and character building
-                    since 1998, shaping the leaders of tomorrow in the heart of
-                    Morang.
+                    {{
+                        settings?.tagline ||
+                        'Committed to excellence in education and holistic development of every student.'
+                    }}
                 </p>
-            </div>
 
-            <div
-                class="absolute right-0 bottom-0 left-0 h-16 bg-white"
-                style="clip-path: polygon(0 100%, 100% 100%, 100% 0)"
-            ></div>
-        </div>
-
-        <div class="bg-white">
-            <div class="container mx-auto max-w-7xl space-y-32 px-4 pt-20">
-                <OverviewSection />
-
-                <div class="relative">
-                    <div
-                        class="absolute inset-0 flex items-center"
-                        aria-hidden="true"
+                <nav
+                    class="mx-auto mt-12 flex max-w-2xl flex-wrap items-center justify-center gap-4"
+                >
+                    <a
+                        href="#overview"
+                        class="rounded-full bg-school-600 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-school-500"
+                        >Overview</a
                     >
-                        <div class="w-full border-t border-slate-100"></div>
-                    </div>
-                    <div class="relative flex justify-center">
-                        <span
-                            class="bg-white text-sm font-bold tracking-[0.3em] text-slate-400 uppercase"
-                            >Values & Purpose</span
-                        >
-                    </div>
-                </div>
-
-                <MissionVision />
-
-                <PrincipalMessage />
-
-                <FacilitiesSection />
-            </div>
-        </div>
-
-        <section class="border-t border-slate-100 bg-slate-50 py-20">
-            <div class="container mx-auto px-4 text-center">
-                <h2 class="mb-6 text-3xl font-bold text-slate-800">
-                    Want to learn more?
-                </h2>
-                <div class="flex flex-wrap justify-center gap-4">
-                    <button
-                        class="rounded-full bg-school-600 px-8 py-3 font-bold text-white shadow-lg transition hover:bg-school-700"
+                    <a
+                        href="#mission"
+                        class="rounded-full bg-white/10 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/20"
+                        >Mission & Vision</a
                     >
-                        View Achievements
-                    </button>
-                    <button
-                        class="rounded-full border border-slate-200 bg-white px-8 py-3 font-bold text-slate-800 transition hover:bg-slate-50"
+                    <a
+                        href="#message"
+                        class="rounded-full bg-white/10 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/20"
+                        >Principal's Message</a
                     >
-                        Contact Admissions
-                    </button>
-                </div>
+                </nav>
             </div>
         </section>
+
+        <div class="mx-auto max-w-7xl space-y-24 px-6 py-16 md:py-24">
+            <OverviewSection :settings="settings" />
+            <MissionVision :settings="settings" />
+            <PrincipalMessage :settings="settings" />
+            <FacilitiesSection :facilities="settings.facilities" />
+        </div>
     </PublicLayout>
 </template>

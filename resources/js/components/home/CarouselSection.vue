@@ -1,154 +1,173 @@
 <script setup lang="ts">
-import { ref, onBeforeUnmount } from 'vue';
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-} from '@/components/ui/carousel';
-import { type CarouselApi } from '@/components/ui/carousel';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
+import type { CarouselSlide } from '@/types';
 
-const api = ref<CarouselApi | null>(null);
-const current = ref(0);
-const count = ref(0);
+const props = defineProps<{
+    slides?: CarouselSlide[] | null;
+}>();
 
-let autoSlideInterval: number | null = null;
-const AUTO_SLIDE_DELAY = 4000; // 4 seconds
-
-const startAutoSlide = () => {
-    stopAutoSlide();
-    autoSlideInterval = window.setInterval(() => {
-        api.value?.scrollNext();
-    }, AUTO_SLIDE_DELAY);
-};
-
-const stopAutoSlide = () => {
-    if (autoSlideInterval) {
-        clearInterval(autoSlideInterval);
-        autoSlideInterval = null;
-    }
-};
-
-// Carousel init
-const onInit = (eventApi: CarouselApi) => {
-    api.value = eventApi;
-    count.value = eventApi.scrollSnapList().length;
-    current.value = eventApi.selectedScrollSnap() + 1;
-
-    eventApi.on('select', () => {
-        current.value = eventApi.selectedScrollSnap() + 1;
-    });
-
-    startAutoSlide();
-};
-
-onBeforeUnmount(() => {
-    stopAutoSlide();
-});
-
-// Images
-const heroImages = [
+const defaultSlides: CarouselSlide[] = [
     {
-        id: 1,
-        src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop',
-        alt: 'Mountain landscape at sunrise',
+        image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop',
+        title: 'Shaping Future Leaders',
+        description:
+            'Empowering students with knowledge and values for a brighter tomorrow.',
     },
     {
-        id: 2,
-        src: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1948&auto=format&fit=crop',
-        alt: 'Foggy forest with tall trees',
+        image: 'https://images.unsplash.com/photo-1523050854058-8df90110c476?q=80&w=2071&auto=format&fit=crop',
+        title: 'Excellence in Education',
+        description:
+            'A tradition of academic achievement and holistic development.',
     },
     {
-        id: 3,
-        src: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1960&auto=format&fit=crop',
-        alt: 'Sunlight through dense forest',
-    },
-    {
-        id: 4,
-        src: 'https://images.unsplash.com/photo-1426604966841-d7adac402b38?q=80&w=2070&auto=format&fit=crop',
-        alt: 'Green valley with river',
-    },
-    {
-        id: 5,
-        src: 'https://images.unsplash.com/photo-1505765050516-f72dcac9c60e?q=80&w=2070&auto=format&fit=crop',
-        alt: 'Northern lights over mountains',
+        image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop',
+        title: 'Modern Learning Environment',
+        description:
+            'State-of-the-art facilities designed for 21st century education.',
     },
 ];
+
+const heroImages = computed(() =>
+    props.slides && props.slides.length > 0 ? props.slides : defaultSlides,
+);
+
+const currentIndex = ref(0);
+let interval: ReturnType<typeof setInterval>;
+
+function next() {
+    currentIndex.value = (currentIndex.value + 1) % heroImages.value.length;
+}
+
+function prev() {
+    currentIndex.value =
+        (currentIndex.value - 1 + heroImages.value.length) %
+        heroImages.value.length;
+}
+
+function goTo(index: number) {
+    currentIndex.value = index;
+}
+
+onMounted(() => {
+    interval = setInterval(next, 5000);
+});
+
+onUnmounted(() => {
+    clearInterval(interval);
+});
 </script>
 
 <template>
-    <section class="relative h-screen w-full overflow-hidden">
-        <!-- Carousel Component -->
-        <Carousel
-            class="absolute inset-0"
-            :opts="{ loop: true }"
-            @init-api="onInit"
-            @mouseenter="stopAutoSlide"
-            @mouseleave="startAutoSlide"
+    <section class="relative h-[70vh] w-full overflow-hidden md:h-[80vh]">
+        <!-- Images -->
+        <div
+            v-for="(slide, index) in heroImages"
+            :key="index"
+            class="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+            :class="
+                index === currentIndex ? 'z-10 opacity-100' : 'z-0 opacity-0'
+            "
         >
-            <!-- Carousel Content -->
-            <CarouselContent class="-ml-0">
-                <CarouselItem
-                    v-for="image in heroImages"
-                    :key="image.id"
-                    class="basis-full pl-0"
-                >
-                    <div class="relative h-screen w-full">
-                        <!-- Image with overlay -->
-                        <img
-                            :src="image.src"
-                            :alt="image.alt"
-                            class="absolute inset-0 h-full w-full object-cover"
-                        />
-                        <!-- Gradient overlay for text contrast -->
-                        <div class="absolute inset-0 bg-black/30" />
-
-                        <!-- Text Overlay Example -->
-                        <div
-                            class="absolute inset-0 flex flex-col items-center justify-center p-4 text-center text-white"
-                        >
-                            <h1
-                                class="mb-4 text-4xl font-bold drop-shadow-lg md:text-6xl"
-                            >
-                                {{ image.alt }}
-                            </h1>
-                            <p
-                                class="max-w-2xl text-lg drop-shadow-md md:text-xl"
-                            >
-                                Experience the beauty of nature with our curated
-                                collection.
-                            </p>
-                            <button
-                                class="hover:bg-opacity-90 mt-8 rounded-full bg-white px-8 py-3 font-semibold text-black transition"
-                            >
-                                Explore Now
-                            </button>
-                        </div>
-                    </div>
-                </CarouselItem>
-            </CarouselContent>
-
-            <!-- Carousel Controls -->
-            <CarouselPrevious
-                class="absolute top-1/2 left-4 z-10 -translate-y-1/2 border-white/50 bg-white/20 text-white hover:bg-white/40"
+            <img
+                :src="
+                    slide.image.startsWith('http')
+                        ? slide.image
+                        : `/storage/${slide.image}`
+                "
+                :alt="slide.title"
+                class="h-full w-full object-cover"
             />
-            <CarouselNext
-                class="absolute top-1/2 right-4 z-10 -translate-y-1/2 border-white/50 bg-white/20 text-white hover:bg-white/40"
-            />
-
-            <!-- Optional Slide Indicators -->
+            <!-- Gradient overlay -->
             <div
-                class="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 gap-2"
-            >
-                <button
-                    v-for="index in count"
-                    :key="index"
-                    class="h-2 w-2 rounded-full transition-all"
-                    :class="current === index ? 'w-4 bg-white' : 'bg-white/50'"
-                    @click="api?.scrollTo(index - 1)"
-                />
+                class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"
+            ></div>
+        </div>
+
+        <!-- Text overlay -->
+        <div class="absolute inset-0 z-20 flex items-end pb-24 md:pb-32">
+            <div class="mx-auto w-full max-w-7xl px-6">
+                <transition
+                    enter-active-class="transition-all duration-700 ease-out"
+                    enter-from-class="translate-y-4 opacity-0"
+                    enter-to-class="translate-y-0 opacity-100"
+                    leave-active-class="transition-all duration-300 ease-in"
+                    leave-from-class="translate-y-0 opacity-100"
+                    leave-to-class="-translate-y-4 opacity-0"
+                    mode="out-in"
+                >
+                    <div :key="currentIndex" class="max-w-2xl">
+                        <h1
+                            class="mb-4 text-4xl font-extrabold tracking-tight text-white drop-shadow-lg md:text-6xl"
+                        >
+                            {{ heroImages[currentIndex].title }}
+                        </h1>
+                        <p
+                            v-if="heroImages[currentIndex].description"
+                            class="text-lg text-white/90 drop-shadow md:text-xl"
+                        >
+                            {{ heroImages[currentIndex].description }}
+                        </p>
+                    </div>
+                </transition>
             </div>
-        </Carousel>
+        </div>
+
+        <!-- Navigation Arrows -->
+        <button
+            @click="prev"
+            class="absolute top-1/2 left-4 z-30 -translate-y-1/2 rounded-full bg-white/20 p-3 text-white backdrop-blur-sm transition-all hover:bg-white/30"
+            aria-label="Previous slide"
+        >
+            <svg
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 19l-7-7 7-7"
+                />
+            </svg>
+        </button>
+        <button
+            @click="next"
+            class="absolute top-1/2 right-4 z-30 -translate-y-1/2 rounded-full bg-white/20 p-3 text-white backdrop-blur-sm transition-all hover:bg-white/30"
+            aria-label="Next slide"
+        >
+            <svg
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9 5l7 7-7 7"
+                />
+            </svg>
+        </button>
+
+        <!-- Dots -->
+        <div
+            class="absolute bottom-8 left-1/2 z-30 flex -translate-x-1/2 gap-2"
+        >
+            <button
+                v-for="(_, index) in heroImages"
+                :key="index"
+                @click="goTo(index)"
+                class="h-2 rounded-full transition-all duration-300"
+                :class="
+                    index === currentIndex
+                        ? 'w-8 bg-white'
+                        : 'w-2 bg-white/50 hover:bg-white/70'
+                "
+                :aria-label="`Go to slide ${index + 1}`"
+            />
+        </div>
     </section>
 </template>

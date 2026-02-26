@@ -1,22 +1,48 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import { ArrowRight, GraduationCap, PhoneCall } from 'lucide-vue-next';
+import { computed } from 'vue';
+import type { StatItem } from '@/types';
 
-// Props make the component truly reusable
 interface Props {
-    title?: string;
-    subtitle?: string;
-    description?: string;
-    image?: string;
+    title?: string | null;
+    subtitle?: string | null;
+    description?: string | null;
+    image?: string | null;
+    stats?: StatItem[] | null;
 }
 
-withDefaults(defineProps<Props>(), {
-    title: 'WELCOME TO OUR SCHOOL',
-    subtitle: 'Shaping Futures, One Student at a Time',
-    description:
-        'Our School provides a nurturing environment where students are encouraged to achieve their highest potential through academic excellence and personal growth.',
-    image: 'https://media.sciencephoto.com/f0/15/01/49/f0150149-800px-wm.jpg',
+const props = withDefaults(defineProps<Props>(), {
+    title: null,
+    subtitle: null,
+    description: null,
+    image: null,
+    stats: null,
 });
+
+const displayTitle = computed(() => props.title || 'WELCOME TO OUR SCHOOL');
+const displaySubtitle = computed(
+    () => props.subtitle || 'Shaping Futures, One Student at a Time',
+);
+const displayDescription = computed(
+    () =>
+        props.description ||
+        'Our School provides a nurturing environment where students are encouraged to achieve their highest potential through academic excellence and personal growth.',
+);
+const displayImage = computed(
+    () =>
+        props.image ||
+        'https://media.sciencephoto.com/f0/15/01/49/f0150149-800px-wm.jpg',
+);
+const displayStats = computed(() =>
+    props.stats && props.stats.length > 0
+        ? props.stats
+        : [
+              { value: '25+', label: 'Years Excellence' },
+              { value: '1.2k+', label: 'Happy Students' },
+              { value: '50+', label: 'Expert Teachers' },
+          ],
+);
 </script>
 
 <template>
@@ -46,18 +72,18 @@ withDefaults(defineProps<Props>(), {
                         </span>
                         <span
                             class="text-xs font-bold tracking-widest text-indigo-700 uppercase"
-                            >{{ title }}</span
+                            >{{ displayTitle }}</span
                         >
                     </div>
 
                     <h1
                         class="text-4xl leading-[1.1] font-black text-slate-900 md:text-5xl lg:text-6xl"
                     >
-                        {{ subtitle }}
+                        {{ displaySubtitle }}
                     </h1>
 
                     <p class="max-w-xl text-lg leading-relaxed text-slate-600">
-                        {{ description }}
+                        {{ displayDescription }}
                     </p>
 
                     <div class="flex flex-wrap gap-4 pt-4">
@@ -70,7 +96,7 @@ withDefaults(defineProps<Props>(), {
                         </Link>
 
                         <Link
-                            href="/about"
+                            href="/about-us"
                             class="text-md flex items-center rounded-xl border-2 border-slate-200 px-4 py-2 font-bold text-gray-700 transition-all hover:border-indigo-600 hover:text-indigo-600"
                         >
                             ABOUT US
@@ -99,51 +125,34 @@ withDefaults(defineProps<Props>(), {
                             class="relative overflow-hidden rounded-2xl border-8 border-white shadow-2xl"
                         >
                             <img
-                                :src="image"
+                                :src="displayImage"
                                 alt="School Campus"
                                 class="h-[400px] w-full object-cover"
                             />
                             <div
                                 class="absolute right-6 bottom-6 left-6 flex justify-around rounded-xl bg-white/90 p-6 shadow-xl backdrop-blur-md"
                             >
-                                <div class="text-center">
+                                <template
+                                    v-for="(stat, i) in displayStats"
+                                    :key="i"
+                                >
                                     <div
-                                        class="text-2xl font-black text-indigo-600"
-                                    >
-                                        25+
+                                        v-if="i > 0"
+                                        class="w-px bg-slate-200"
+                                    ></div>
+                                    <div class="text-center">
+                                        <div
+                                            class="text-2xl font-black text-indigo-600"
+                                        >
+                                            {{ stat.value }}
+                                        </div>
+                                        <div
+                                            class="text-[10px] font-bold tracking-tighter text-slate-500 uppercase"
+                                        >
+                                            {{ stat.label }}
+                                        </div>
                                     </div>
-                                    <div
-                                        class="text-[10px] font-bold tracking-tighter text-slate-500 uppercase"
-                                    >
-                                        Years Excellence
-                                    </div>
-                                </div>
-                                <div class="w-px bg-slate-200"></div>
-                                <div class="text-center">
-                                    <div
-                                        class="text-2xl font-black text-indigo-600"
-                                    >
-                                        1.2k+
-                                    </div>
-                                    <div
-                                        class="text-[10px] font-bold tracking-tighter text-slate-500 uppercase"
-                                    >
-                                        Happy Students
-                                    </div>
-                                </div>
-                                <div class="w-px bg-slate-200"></div>
-                                <div class="text-center">
-                                    <div
-                                        class="text-2xl font-black text-indigo-600"
-                                    >
-                                        50+
-                                    </div>
-                                    <div
-                                        class="text-[10px] font-bold tracking-tighter text-slate-500 uppercase"
-                                    >
-                                        Expert Teachers
-                                    </div>
-                                </div>
+                                </template>
                             </div>
                         </div>
                     </div>
