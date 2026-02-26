@@ -17,5 +17,5 @@ const settings = computed(() => page.props.siteSettings as SiteSettings);
         <slot />
     </main>
 
-    <Footer />
+    <Footer :settings="settings" />
 </template>

@@ -458,9 +458,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import PublicLayout from '@/layouts/PublicLayout.vue';
 import type { SiteSettings } from '@/types';
-import { Textarea } from '@/components/ui/textarea';
 
 defineProps<{
     settings: SiteSettings;

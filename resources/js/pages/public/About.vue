@@ -12,6 +12,7 @@ const props = defineProps<{
     settings: SiteSettings;
 }>();
 
+
 const schoolName = props.settings?.site_name ?? 'Our School';
 </script>
 

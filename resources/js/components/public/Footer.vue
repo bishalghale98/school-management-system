@@ -10,41 +10,53 @@ import {
     Linkedin,
 } from 'lucide-vue-next';
 import { computed } from 'vue';
+import type { SiteSettings } from '@/types';
+
+const props = defineProps<{
+    settings: SiteSettings;
+}>();
 
 const currentYear = computed(() => new Date().getFullYear());
 
-const socialLinks = [
-    {
-        name: 'Facebook',
-        icon: Facebook,
-        url: '#',
-        hoverColor: 'hover:bg-blue-600',
-    },
-    {
-        name: 'Twitter',
-        icon: Twitter,
-        url: '#',
-        hoverColor: 'hover:bg-blue-400',
-    },
-    {
-        name: 'YouTube',
-        icon: Youtube,
-        url: '#',
-        hoverColor: 'hover:bg-red-600',
-    },
-    {
-        name: 'Message',
-        icon: MessageCircle,
-        url: '#',
-        hoverColor: 'hover:bg-school-600',
-    },
-    {
-        name: 'LinkedIn',
-        icon: Linkedin,
-        url: '#',
-        hoverColor: 'hover:bg-blue-700',
-    },
-];
+const socialLinks = computed(() => {
+    const links = [];
+    if (props.settings?.facebook_url)
+        links.push({
+            name: 'Facebook',
+            icon: Facebook,
+            url: props.settings.facebook_url,
+            hoverColor: 'hover:bg-blue-600',
+        });
+    if (props.settings?.twitter_url)
+        links.push({
+            name: 'Twitter',
+            icon: Twitter,
+            url: props.settings.twitter_url,
+            hoverColor: 'hover:bg-blue-400',
+        });
+    if (props.settings?.youtube_url)
+        links.push({
+            name: 'YouTube',
+            icon: Youtube,
+            url: props.settings.youtube_url,
+            hoverColor: 'hover:bg-red-600',
+        });
+    if (props.settings?.whatsapp_url)
+        links.push({
+            name: 'WhatsApp',
+            icon: MessageCircle,
+            url: props.settings.whatsapp_url,
+            hoverColor: 'hover:bg-green-600',
+        });
+    if (props.settings?.linkedin_url)
+        links.push({
+            name: 'LinkedIn',
+            icon: Linkedin,
+            url: props.settings.linkedin_url,
+            hoverColor: 'hover:bg-blue-700',
+        });
+    return links;
+});
 
 const quickLinks = [
     { text: 'News & Updates', url: '/news-update' },
@@ -52,7 +64,7 @@ const quickLinks = [
     { text: 'Gallery', url: '/gallery' },
     { text: 'Admission', url: '/admission' },
     { text: 'About Us', url: '/about' },
-    { text: 'Contact Us', url: '/contact' },
+    { text: 'Contact Us', url: '/contact-us' },
 ];
 </script>
 
@@ -67,26 +79,37 @@ const quickLinks = [
                     <div
                         class="flex h-10 w-10 items-center justify-center rounded-full bg-white"
                     >
+                        <img
+                            v-if="settings?.logo"
+                            :src="`/storage/${settings.logo}`"
+                            :alt="settings?.site_name"
+                            class="h-8 w-8 rounded-full object-cover"
+                        />
                         <div
+                            v-else
                             class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900"
                         >
                             <span class="text-xs font-bold text-white"
-                                >ESS</span
+                                >LOGO</span
                             >
                         </div>
                     </div>
-                    <h3 class="text-lg font-bold text-white">My School</h3>
+                    <h3 class="text-lg font-bold text-white">
+                        {{ settings?.site_name ?? 'My School' }}
+                    </h3>
                 </div>
                 <p class="mb-4 text-sm leading-relaxed">
-                    Excellence in Education
+                    {{ settings?.tagline ?? 'Excellence in Education' }}
                 </p>
 
                 <!-- Social Icons -->
-                <div class="flex space-x-4">
+                <div v-if="socialLinks.length" class="flex space-x-4">
                     <a
                         v-for="social in socialLinks"
                         :key="social.name"
                         :href="social.url"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         class="hover:bg-opacity-80 rounded bg-gray-800 p-2 transition"
                         :class="social.hoverColor"
                         :aria-label="social.name"
@@ -112,17 +135,48 @@ const quickLinks = [
             <div>
                 <h3 class="mb-4 text-lg font-bold text-white">Contact Us</h3>
                 <ul class="space-y-3 text-sm">
-                    <li class="flex items-center space-x-2">
+                    <li
+                        v-if="settings?.address"
+                        class="flex items-center space-x-2"
+                    >
                         <MapPin class="h-4 w-4 flex-shrink-0 text-gray-400" />
-                        <span>123 Education Street, City, State 12345</span>
+                        <span>{{ settings.address }}</span>
                     </li>
-                    <li class="flex items-center space-x-2">
+                    <li
+                        v-if="settings?.phone_1"
+                        class="flex items-center space-x-2"
+                    >
                         <Phone class="h-4 w-4 flex-shrink-0 text-gray-400" />
-                        <span>+1 (555) 123-4567</span>
+                        <a
+                            :href="`tel:${settings.phone_1}`"
+                            class="transition hover:text-white"
+                        >
+                            {{ settings.phone_1 }}
+                        </a>
                     </li>
-                    <li class="flex items-center space-x-2">
+                    <li
+                        v-if="settings?.phone_2"
+                        class="flex items-center space-x-2"
+                    >
+                        <Phone class="h-4 w-4 flex-shrink-0 text-gray-400" />
+                        <a
+                            :href="`tel:${settings.phone_2}`"
+                            class="transition hover:text-white"
+                        >
+                            {{ settings.phone_2 }}
+                        </a>
+                    </li>
+                    <li
+                        v-if="settings?.email_1"
+                        class="flex items-center space-x-2"
+                    >
                         <Mail class="h-4 w-4 flex-shrink-0 text-gray-400" />
-                        <span>info@myschool.edu</span>
+                        <a
+                            :href="`mailto:${settings.email_1}`"
+                            class="transition hover:text-white"
+                        >
+                            {{ settings.email_1 }}
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -133,8 +187,13 @@ const quickLinks = [
                 <div class="flex items-start space-x-2">
                     <MapPin class="h-4 w-4 flex-shrink-0 text-gray-400" />
                     <p class="text-sm">
-                        Visit us at our campus.<br />
-                        Monday - Friday: 8:00 AM - 4:00 PM
+                        <span v-if="settings?.address">
+                            {{ settings.address }}<br />
+                        </span>
+                        {{
+                            settings?.office_hours ??
+                            'Sunday - Friday: 8:00 AM - 4:00 PM'
+                        }}
                     </p>
                 </div>
             </div>
@@ -144,7 +203,8 @@ const quickLinks = [
         <div
             class="border-t border-gray-800 px-4 py-4 text-center text-xs text-gray-500"
         >
-            © {{ currentYear }} My School. All rights reserved.
+            © {{ currentYear }} {{ settings?.site_name ?? 'My School' }}. All
+            rights reserved.
         </div>
     </footer>
 </template>

@@ -29,7 +29,7 @@ const currentUrl = computed(() => page.url);
 
 const navLinks = [
     { label: 'Home', href: '/' },
-    { label: 'About Us', href: '/about-us' }, // Added flag for dropdown logic
+    { label: 'About Us', href: '/about-us' },
     { label: 'Downloads', href: '/downloads' },
     { label: 'Gallery', href: '/gallery' },
     { label: 'News & Updates', href: '/news-update' },
@@ -123,14 +123,16 @@ const closeMobileMenu = () => {
                     <Instagram class="h-4 w-4 text-pink-500" />
                 </Link>
                 <Link
-                    href="#"
+                    v-if="settings?.whatsapp_url"
+                    :href="settings.whatsapp_url"
                     target="_blank"
                     class="rounded p-1 transition hover:bg-slate-700"
                 >
                     <MessageCircle class="h-4 w-4 text-green-500" />
                 </Link>
                 <Link
-                    href="#"
+                    v-if="settings?.linkedin_url"
+                    :href="settings.linkedin_url"
                     target="_blank"
                     class="rounded p-1 transition hover:bg-slate-700"
                 >
